@@ -10,10 +10,10 @@ using namespace std;
 int main(int argc, char *argv[]){
 
     FILE *arq;
-    const char *entrada;
-    entrada = argv[1];
-    entrada = "teste.txt";
-    arq = fopen(entrada,"r");
+    string entrada,saida;
+    entrada = argv[2];
+    saida = argv[4];
+    arq = fopen(entrada.c_str(),"r");
     char Linha[1000];
     char *token;
     char *result;
@@ -44,10 +44,10 @@ int main(int argc, char *argv[]){
                 if(token != NULL){
                     verbete = token;
                     verbete = verbete.substr(1,verbete.length());
-                    node = new TV(verbete);
+                    node = new TV(verbete,saida);
                 }
                 else{
-                    node = new TV();
+                    node = new TV(saida);
                 }
                 verbete.clear();
                 inserir(dic,chave,tipo,node);
@@ -58,7 +58,9 @@ int main(int argc, char *argv[]){
         }
 
     }
-    imprimiDicionario(dic);
+    imprimiDicionario(dic,saida);
+    RemoveDicionario(dic);
+    imprimiDicionario2(dic,saida);
     terminar(dic);
 
     fclose(arq);

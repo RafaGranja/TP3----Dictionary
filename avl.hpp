@@ -5,6 +5,7 @@
 #include <cstring>
 #include <new>
 #include <stdlib.h>
+#include <cstdio>
 using namespace std;
 
 typedef string TC;
@@ -12,13 +13,24 @@ typedef string TC;
 class vet_string{
 
     public :
+
         TC *verb;
         int tam;
+        FILE *arq;
+        TC saida;
 
         vet_string(){
 
             this->tam=0;
             this->verb = NULL;
+
+        }
+
+        vet_string(TC _saida){
+
+            this->tam=0;
+            this->verb = NULL;
+            this->saida = _saida;
 
         }
 
@@ -41,23 +53,31 @@ class vet_string{
 
         }
 
-        void print(){
+        void print(string chave,string tipo){
 
-            if(tam!=0){
 
-                for(int i =0; i < this->tam;i++){
+            this->arq = fopen(this->saida.c_str(), "a");
 
-                    cout<< i+1 << ". "<< this->verb[i] << endl;
-
-                }
-
+            fprintf(this->arq,"%s (%s)\n",chave.c_str(),tipo.c_str());
+        
+            for(int i=0; i<this->tam;i++){
+                fprintf(this->arq,"%d. %s\n",i+1,this->verb[i].c_str());
             }
+
+            fclose(this->arq);
 
         }
 
         int length(){
 
             return this->tam;
+
+        }
+
+        void clear(){
+
+            this->tam=0;
+            this->verb = NULL;
 
         }
 
@@ -68,6 +88,17 @@ class vet_string{
             } 
             else{
                 return "";
+            }
+
+        }
+
+        bool empty(){
+
+            if(this->verb==NULL) {
+                return true;
+            }
+            else{
+                return false;
             }
 
         }
@@ -83,9 +114,13 @@ class TV
 
             this->verb = new vet_string();
         }
-        TV(TC init){
+        TV(TC saida){
 
-            this->verb = new vet_string();
+            this->verb = new vet_string(saida);
+        }
+        TV(TC init,TC saida){
+
+            this->verb = new vet_string(saida);
             this->verb->push(init);
         }
 
@@ -115,8 +150,7 @@ class Noh {
 
         void print(){
 
-            cout << this->chave << " (" << this->tipo << ")" << endl;
-            this->valor->verb->print();
+            this->valor->verb->print(this->chave,this->tipo);
 
         };
 
@@ -126,8 +160,10 @@ class DicAVL {
 
     public:
         Noh *raiz; 
+        int qtd;
         DicAVL(){
 
+            this->qtd =0;
             this->raiz=new Noh();
 
         };
@@ -258,6 +294,7 @@ int balancear(DicAVL &D,TC c){
 }
 
 Noh* inserir(DicAVL &D, TC c, TC _tipo, TV* v){
+    D.qtd++;
     Noh *n = new(std::nothrow) Noh();
     if (n == NULL){
         cout << "Erro de alocacao!" << endl;
@@ -291,10 +328,12 @@ Noh* inserir(DicAVL &D, TC c, TC _tipo, TV* v){
             }
             else
                 p = p->dir;
-        }else{
+        }
+        if (strcmp(c.c_str(),p->chave.c_str())==0){
             if(v->verb->verb!=NULL){
                 p->valor->verb->push(v->verb->get(0));
             }
+            D.qtd--;
             break;
         }
     }
@@ -537,6 +576,7 @@ void libera_no(Noh *n){
     delete n;
     n=NULL;
 }
+
 void terminar (DicAVL &D){
     libera_no(D.raiz);
     D.raiz=NULL;
@@ -554,7 +594,14 @@ void imprimir(Noh *a){
 
 }
 
-void imprimiDicionario(DicAVL &D){
+void imprimiDicionario(DicAVL &D,string saida){
+
+    remove(saida.c_str());
+    imprimir(D.raiz);
+
+}
+
+void imprimiDicionario2(DicAVL &D,string saida){
 
     imprimir(D.raiz);
 
@@ -568,6 +615,37 @@ Noh* atualizaDic(DicAVL &D, TC c, TC _tipo, TV* v){
     h->valor = v;
     remover(D,h);
     return inserir(D,c,_tipo,v);
+}
+
+int remove1mais(DicAVL &D,Noh *a){
+
+    if(a!=NULL){
+
+        if(remove1mais(D,a->esq)==1){
+            return 1;
+        }
+        if(remove1mais(D,a->dir)==1){
+            return 1;
+        }
+        if(!a->valor->verb->empty()){
+            remover(D,a);
+            return 1;
+        }
+        return 0;
+
+    }
+    return 0;
+
+}
+
+void RemoveDicionario(DicAVL &D){
+
+    for (int i = 0; i < D.qtd ; i++)
+    {
+        remove1mais(D,D.raiz);
+    }
+    
+
 }
 
 
