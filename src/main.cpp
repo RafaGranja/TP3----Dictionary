@@ -1,5 +1,6 @@
-#include "avl.hpp"
+#include "../include/avl.hpp"
 #include <typeinfo> 
+#include <time.h>
 
 
 using namespace std;
@@ -8,6 +9,9 @@ using namespace std;
 
 
 int main(int argc, char *argv[]){
+
+    clock_t inicio,fim;
+    inicio = clock();
 
     FILE *arq;
     string entrada,saida;
@@ -44,7 +48,12 @@ int main(int argc, char *argv[]){
                 if(token != NULL){
                     verbete = token;
                     verbete = verbete.substr(1,verbete.length());
-                    node = new TV(verbete,saida);
+                    if(verbete.length() > 1){
+                        node = new TV(verbete,saida);
+                    }
+                    else{
+                        node = new TV(saida);
+                    }
                 }
                 else{
                     node = new TV(saida);
@@ -64,6 +73,11 @@ int main(int argc, char *argv[]){
     terminar(dic);
 
     fclose(arq);
+
+
+    fim = clock();
+    cout << "TEMPO DE EXECUÇÃO: " <<  ((double)(fim - inicio) / CLOCKS_PER_SEC) << endl;
+
     return 0;
 
 }

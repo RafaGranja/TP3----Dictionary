@@ -49,7 +49,7 @@ class vet_string{
             //this->verb=verb_aux;
             this->verb[tam] = _add;
             this->tam++;
-            delete verb_aux;
+            delete[] verb_aux;
 
         }
 
@@ -262,11 +262,11 @@ int balancear(DicAVL &D,TC c){
             return 1;
         int res;
         DicAVL di = D;
-        if (strcmp(c.c_str(),D.raiz->chave.c_str())==-1){
+        if (strcmp(c.c_str(),D.raiz->chave.c_str())<0){
             di.raiz = D.raiz->esq;
             if ((res=balancear(di, c))==1) {
                 if(fatorBalanceamento(D.raiz)>=2){
-                    if (strcmp(c.c_str(),D.raiz->esq->chave.c_str())==-1){
+                    if (strcmp(c.c_str(),D.raiz->esq->chave.c_str())<0){
                         RotacaoLL(D);
                     }
                     else
@@ -277,7 +277,7 @@ int balancear(DicAVL &D,TC c){
             di.raiz = D.raiz->dir;
             if ((res=balancear(di, c))==1) {
                 if(fatorBalanceamento(D.raiz)>=2){
-                    if (strcmp(c.c_str(),D.raiz->dir->chave.c_str())==1){
+                    if (strcmp(c.c_str(),D.raiz->dir->chave.c_str())>0){
                         RotacaoRR(D);
                     }
                     else
@@ -312,7 +312,7 @@ Noh* inserir(DicAVL &D, TC c, TC _tipo, TV* v){
     }
     Noh *p = D.raiz;
     for (;;){
-        if (strcmp(c.c_str(),p->chave.c_str())==-1){
+        if (strcmp(c.c_str(),p->chave.c_str())<0){
             if (p->esq == NULL){
                 p->esq = n;
                 n->pai = p;
@@ -320,7 +320,7 @@ Noh* inserir(DicAVL &D, TC c, TC _tipo, TV* v){
             }else
                 p = p->esq;
         }
-        if (strcmp(c.c_str(),p->chave.c_str())==1){
+        if (strcmp(c.c_str(),p->chave.c_str())>0){
             if (p->dir == NULL){
                 p->dir = n;
                 n->pai = p;
@@ -348,7 +348,7 @@ Noh* procurar (DicAVL &D, TC c){
     while (p != NULL){
         if(strcmp(c.c_str(),p->chave.c_str())==0)
             return p;
-        else if (strcmp(c.c_str(),p->chave.c_str())==1){
+        else if (strcmp(c.c_str(),p->chave.c_str())>0){
             p=p->dir;
         }
         else{
@@ -373,7 +373,7 @@ int remove_AVL2(DicAVL &D,TC c){
     }
     int res;
     DicAVL di = D;
-    if (strcmp(c.c_str(),D.raiz->chave.c_str())==-1){
+    if (strcmp(c.c_str(),D.raiz->chave.c_str())<0){
         di.raiz=D.raiz->esq;
         if ((res=remove_AVL2(di, c))==1) {
             if(fatorBalanceamento(D.raiz)>=2){
@@ -384,7 +384,7 @@ int remove_AVL2(DicAVL &D,TC c){
                     RotacaoRL(D);
             }
         }
-    }else if (strcmp(c.c_str(),D.raiz->chave.c_str())==1){
+    }else if (strcmp(c.c_str(),D.raiz->chave.c_str())>0){
         di.raiz=D.raiz->dir;
         if ((res=remove_AVL2(di, c))==1) {
             if(fatorBalanceamento(D.raiz)>=2){
@@ -468,7 +468,7 @@ int remove_AVL(DicAVL &D,TC c){
     }
     int res;
     DicAVL di = D;
-    if (strcmp(c.c_str(),D.raiz->chave.c_str())==-1){
+    if (strcmp(c.c_str(),D.raiz->chave.c_str())<0){
         di.raiz=D.raiz->esq;
         if ((res=remove_AVL(di, c))==1) {
             if(fatorBalanceamento(D.raiz)>=2){
@@ -479,7 +479,7 @@ int remove_AVL(DicAVL &D,TC c){
                     RotacaoRL(D);
             }
         }
-    }else if (strcmp(c.c_str(),D.raiz->chave.c_str())==1) {
+    }else if (strcmp(c.c_str(),D.raiz->chave.c_str())>0) {
         di.raiz=D.raiz->dir;
         if ((res=remove_AVL(di, c))==1) {
             if(fatorBalanceamento(D.raiz)>=2){
